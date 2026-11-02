@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADOUWA | عدوة - Couture Streetwear</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Syne & Cairo -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Syne:wght@400;700;800;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome 6 Pro CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        cairo: ['Cairo', 'sans-serif'],
+                        syne: ['Syne', 'sans-serif'],
+                    },
+                    colors: {
+                        adouwa: {
+                            black: '#0D0D0D',
+                            green: '#0F2B24',
+                            gold: '#C8A24D',
+                            cream: '#F6F2E9',
+                            'gold-hover': '#b58f3b',
+                            'green-dark': '#071612',
+                            gray: '#171717'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #0D0D0D;
+            color: #F6F2E9;
+        }
+        .font-brand {
+            font-family: 'Syne', 'Cairo', sans-serif;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0D0D0D;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #C8A24D;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #b58f3b;
+        }
+        /* Subtle Glows */
+        .gold-glow {
+            box-shadow: 0 0 25px rgba(200, 162, 77, 0.15);
+        }
+        .green-glow {
+            box-shadow: 0 0 35px rgba(15, 43, 36, 0.4);
+        }
+    </style>
+</head>
+<body class="bg-adouwa-black text-adouwa-cream min-h-screen flex flex-col justify-between selection:bg-adouwa-gold selection:text-adouwa-black">
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed top-5 left-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- Announcement Bar -->
+    <div class="bg-adouwa-green text-adouwa-gold py-2 px-4 text-center text-xs font-black tracking-widest uppercase border-b border-adouwa-gold/20 flex items-center justify-between">
+        <span class="hidden sm:inline-block text-[10px] opacity-75">ADOUWA GLOBAL CURATED COLLECTION</span>
+        <span id="announcementText" class="mx-auto">شحن مجاني لكافة الولايات للطلبات أكثر من 15,000 د.ج</span>
+        <button onclick="toggleLang()" id="langToggleBtn" class="text-white hover:text-adouwa-gold font-bold text-xs uppercase px-2 py-0.5 rounded border border-white/20 transition-all">EN</button>
+    </div>
+
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-40 bg-adouwa-black/90 backdrop-blur-md border-b border-white/10 transition-all">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <div class="flex items-center gap-4 cursor-pointer" onclick="switchView('store')">
+                <div class="w-11 h-11 bg-adouwa-gold text-adouwa-black font-brand font-black text-2xl flex items-center justify-center rounded-xl shadow-lg shadow-adouwa-gold/20">
+                    A
+                </div>
+                <div>
+                    <h1 class="text-2xl font-black font-brand tracking-wider text-white">ADOUWA <span class="text-xs text-adouwa-gold font-normal tracking-widest block -mt-1">عدوة</span></h1>
+                </div>
+            </div>
+
+            <!-- Navigation Links (Desktop) -->
+            <nav class="hidden lg:flex items-center gap-8 text-sm font-bold tracking-wide">
+                <a href="#hero" onclick="switchView('store')" class="text-white hover:text-adouwa-gold transition-colors" data-i18n="nav_home">الرئيسية</a>
+                <a href="#newArrivals" onclick="switchView('store')" class="text-adouwa-cream/80 hover:text-adouwa-gold transition-colors" data-i18n="nav_new">الإصدارات الجديدة</a>
+                <a href="#shop" onclick="switchView('store')" class="text-adouwa-cream/80 hover:text-adouwa-gold transition-colors" data-i18n="nav_shop">المتجر</a>
+                <a href="#brandStory" onclick="switchView('store')" class="text-adouwa-cream/80 hover:text-adouwa-gold transition-colors" data-i18n="nav_story">قصة عدوة</a>
+                <a href="#trackOrderSection" onclick="switchView('store')" class="text-adouwa-cream/80 hover:text-adouwa-gold transition-colors" data-i18n="nav_track">تتبع الطلب</a>
+            </nav>
+
+            <!-- Actions -->
+            <div class="flex items-center gap-4">
+                <!-- Search Icon Toggle -->
+                <button onclick="toggleSearchModal()" class="p-2 text-adouwa-cream/80 hover:text-adouwa-gold transition-colors">
+                    <i class="fa-solid fa-magnifying-glass text-lg"></i>
+                </button>
+
+                <!-- Admin Toggle -->
+                <button onclick="toggleAdminMode()" id="adminToggleBtn" class="flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold bg-white/5 hover:bg-white/10 text-adouwa-gold border border-adouwa-gold/30 transition-all">
+                    <i class="fa-solid fa-crown text-xs"></i>
+                    <span id="adminToggleText" data-i18n="admin_btn">لوحة التحكم</span>
+                </button>
+
+                <!-- Cart Button -->
+                <button onclick="openCartDrawer()" class="relative p-2.5 rounded-xl bg-adouwa-green hover:bg-adouwa-green-dark text-white transition-all flex items-center gap-2 border border-adouwa-gold/30">
+                    <i class="fa-solid fa-bag-shopping text-adouwa-gold"></i>
+                    <span id="cartBadge" class="bg-adouwa-gold text-adouwa-black text-xs font-black w-5 h-5 rounded-full flex items-center justify-center">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- ==================== STORE VIEW ==================== -->
+        <div id="storeView" class="space-y-16">
+            
+            <!-- Hero Section -->
+            <section id="hero" class="relative rounded-3xl overflow-hidden bg-gradient-to-br from-adouwa-green via-adouwa-black to-adouwa-gray border border-white/10 min-h-[500px] flex items-center p-8 sm:p-16 green-glow">
+                <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&q=80&w=1600')] bg-cover bg-center opacity-25 mix-blend-overlay"></div>
+                <div class="relative z-10 max-w-2xl space-y-6">
+                    <div class="inline-flex items-center gap-2 bg-adouwa-gold/10 border border-adouwa-gold/40 text-adouwa-gold px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-widest">
+                        <span class="w-2 h-2 rounded-full bg-adouwa-gold animate-pulse"></span>
+                        ADOUWA DROP #04 - STREETWEAR REVOLUTION
+                    </div>
+                    <h2 class="text-4xl sm:text-6xl font-black font-brand leading-none tracking-tight text-white uppercase">
+                        هوية عربية <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-adouwa-gold to-amber-200">بروح عالمية</span>
+                    </h2>
+                    <p class="text-adouwa-cream/80 text-sm sm:text-base leading-relaxed max-w-xl font-light">
+                        تصاميم تجمع بين تمرد الـ Streetwear وحس الفخامة المتفردة. مجموعات محدودة الإصدار تعبّر عن أسلوب حياتك المستقل.
+                    </p>
+                    <div class="pt-4 flex flex-wrap gap-4">
+                        <a href="#shop" class="bg-adouwa-gold hover:bg-adouwa-gold-hover text-adouwa-black font-black px-8 py-4 rounded-xl shadow-xl transition-all flex items-center gap-3 tracking-wider uppercase text-sm">
+                            <span data-i18n="hero_cta">تسوق المجموعة الآن</span>
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </a>
+                        <a href="#brandStory" class="bg-white/5 hover:bg-white/10 border border-white/20 text-white font-bold px-6 py-4 rounded-xl transition-all text-sm">
+                            <span data-i18n="hero_secondary">اكتشف الفلسفة</span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Brand Story Accent -->
+            <section id="brandStory" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white/5 p-8 rounded-3xl border border-white/10 space-y-3">
+                    <i class="fa-solid fa-fingerprint text-adouwa-gold text-2xl"></i>
+                    <h3 class="font-bold text-lg text-white">تفرّد دون تقليد</h3>
+                    <p class="text-xs text-adouwa-cream/60 leading-relaxed">ثقافة مستقلة تعيد تعاريف الموضة السريعة بتطريز وخامات استثنائية.</p>
+                </div>
+                <div class="bg-white/5 p-8 rounded-3xl border border-white/10 space-y-3">
+                    <i class="fa-solid fa-venus-mars text-adouwa-gold text-2xl"></i>
+                    <h3 class="font-bold text-lg text-white">Unisex For Everyone</h3>
+                    <p class="text-xs text-adouwa-cream/60 leading-relaxed">قصات مريحة وتصاميم مميزة تتجاوز الفئات العمرية والجنسية.</p>
+                </div>
+                <div class="bg-white/5 p-8 rounded-3xl border border-white/10 space-y-3">
+                    <i class="fa-solid fa-gem text-adouwa-gold text-2xl"></i>
+                    <h3 class="font-bold text-lg text-white">Limited Drops</h3>
+                    <p class="text-xs text-adouwa-cream/60 leading-relaxed">كل قطعة يتم إنتاجها بكميات محدودة للحفاظ على خصوصيتها وفخامتها.</p>
+                </div>
+            </section>
+
+            <!-- Store Grid Section -->
+            <section id="shop" class="space-y-8">
+                <!-- Section Header & Filter -->
+                <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-white/10 pb-6">
+                    <div>
+                        <span class="text-xs font-bold text-adouwa-gold uppercase tracking-widest block mb-1">THE CATALOGUE</span>
+                        <h2 class="text-3xl font-black font-brand text-white" id="catalogTitle">المتجر والرئيسية</h2>
+                    </div>
+
+                    <!-- Category Filters -->
+                    <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none" id="categoryBar">
+                        <!-- Rendered by JS -->
+                    </div>
+                </div>
+
+                <!-- Products Grid -->
+                <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <!-- Populated dynamically -->
+                </div>
+
+                <!-- Empty State -->
+                <div id="noProductsFound" class="hidden text-center py-20 bg-white/5 rounded-3xl border border-white/10">
+                    <i class="fa-solid fa-ghost text-4xl text-adouwa-gold mb-3"></i>
+                    <h4 class="text-lg font-bold text-white">لا توجد قطع مطابقة للفلتر الحالية</h4>
+                    <button onclick="resetStoreFilters()" class="mt-4 px-6 py-2.5 bg-adouwa-gold text-adouwa-black rounded-xl font-bold text-xs uppercase tracking-wider">إعادة ضبط البحث</button>
+                </div>
+            </section>
+
+            <!-- Order Tracking Section -->
+            <section id="trackOrderSection" class="bg-adouwa-green/30 border border-adouwa-gold/20 rounded-3xl p-8 max-w-xl mx-auto space-y-4">
+                <div class="text-center space-y-1">
+                    <i class="fa-solid fa-truck-fast text-2xl text-adouwa-gold"></i>
+                    <h3 class="text-xl font-black text-white">تتبع حالة طلبك</h3>
+                    <p class="text-xs text-adouwa-cream/70">أدخل رقم الطلب لمعرفة حالته ومكان الشحنة</p>
+                </div>
+                <div class="flex gap-2">
+                    <input type="text" id="trackInput" placeholder="مثال: ORD-7492" class="flex-1 bg-adouwa-black border border-white/20 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-adouwa-gold">
+                    <button onclick="trackOrder()" class="bg-adouwa-gold hover:bg-adouwa-gold-hover text-adouwa-black font-bold px-6 py-3 rounded-xl text-xs uppercase">تتبع</button>
+                </div>
+                <div id="trackResult" class="hidden p-4 bg-adouwa-black/80 rounded-2xl border border-white/10 text-xs space-y-2">
+                    <!-- Dynamic Output -->
+                </div>
+            </section>
+        </div>
+
+        <!-- ==================== ADMIN DASHBOARD ==================== -->
+        <div id="adminView" class="hidden space-y-8">
+            <!-- Header -->
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 bg-white/5 p-6 rounded-3xl border border-white/10">
+                <div>
+                    <h2 class="text-2xl font-black font-brand text-white flex items-center gap-3">
+                        <i class="fa-solid fa-sliders text-adouwa-gold"></i>
+                        <span>لوحة إدارة ADOUWA</span>
+                    </h2>
+                    <p class="text-xs text-adouwa-cream/60 mt-1">التحكم في المبيعات، تحديث المخزون، وإدارة المنتجات والطلبات بكفاءة.</p>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="openProductEditorModal()" class="bg-adouwa-gold hover:bg-adouwa-gold-hover text-adouwa-black font-bold px-5 py-3 rounded-2xl text-xs flex items-center gap-2">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>إضافة قطعة جديدة</span>
+                    </button>
+                    <button onclick="resetDataToDefault()" class="bg-white/10 hover:bg-white/20 text-white font-bold px-4 py-3 rounded-2xl text-xs">
+                        إعادة ضبط
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-white/5 p-5 rounded-2xl border border-white/10">
+                    <span class="text-xs font-medium text-adouwa-cream/60 block">إجمالي المبيعات المقدرة</span>
+                    <h4 id="statTotalSales" class="text-2xl font-black text-adouwa-gold mt-1">0 د.ج</h4>
+                </div>
+                <div class="bg-white/5 p-5 rounded-2xl border border-white/10">
+                    <span class="text-xs font-medium text-adouwa-cream/60 block">عدد الطلبات</span>
+                    <h4 id="statTotalOrders" class="text-2xl font-black text-white mt-1">0</h4>
+                </div>
+                <div class="bg-white/5 p-5 rounded-2xl border border-white/10">
+                    <span class="text-xs font-medium text-adouwa-cream/60 block">عدد القطع بالمتجر</span>
+                    <h4 id="statTotalProducts" class="text-2xl font-black text-white mt-1">0</h4>
+                </div>
+                <div class="bg-white/5 p-5 rounded-2xl border border-white/10">
+                    <span class="text-xs font-medium text-adouwa-cream/60 block">قطع منخفضة المخزون</span>
+                    <h4 id="statLowStock" class="text-2xl font-black text-rose-400 mt-1">0</h4>
+                </div>
+            </div>
+
+            <!-- Admin Navigation Tabs -->
+            <div class="bg-white/5 rounded-3xl border border-white/10 overflow-hidden">
+                <div class="flex border-b border-white/10 px-6 pt-4 gap-6">
+                    <button onclick="switchAdminTab('products')" id="tabProductsBtn" class="pb-3 text-xs font-bold uppercase border-b-2 border-adouwa-gold text-adouwa-gold">المنتجات والمخزون</button>
+                    <button onclick="switchAdminTab('orders')" id="tabOrdersBtn" class="pb-3 text-xs font-bold uppercase border-b-2 border-transparent text-adouwa-cream/60 hover:text-white">الطلبات الواردة</button>
+                </div>
+
+                <!-- Products Admin Table -->
+                <div id="adminProductsTab" class="p-6 overflow-x-auto">
+                    <table class="w-full text-right text-xs">
+                        <thead>
+                            <tr class="text-adouwa-cream/40 border-b border-white/10 font-bold uppercase pb-3">
+                                <th class="pb-3 pr-4">المنتج</th>
+                                <th class="pb-3">الفئة</th>
+                                <th class="pb-3">السعر</th>
+                                <th class="pb-3">المخزون المتوفر</th>
+                                <th class="pb-3 text-left pl-4">إجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminProductsBody" class="divide-y divide-white/5">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Orders Admin Table -->
+                <div id="adminOrdersTab" class="hidden p-6 overflow-x-auto">
+                    <table class="w-full text-right text-xs">
+                        <thead>
+                            <tr class="text-adouwa-cream/40 border-b border-white/10 font-bold uppercase pb-3">
+                                <th class="pb-3 pr-4">رقم الطلب</th>
+                                <th class="pb-3">اسم الزبون</th>
+                                <th class="pb-3">الهاتف والولاية</th>
+                                <th class="pb-3">القطع</th>
+                                <th class="pb-3">المجموع</th>
+                                <th class="pb-3">الحالة</th>
+                                <th class="pb-3 text-left pl-4">تحديث</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminOrdersBody" class="divide-y divide-white/5">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-adouwa-black border-t border-white/10 py-12 mt-20 text-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div class="space-y-3">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 bg-adouwa-gold text-adouwa-black font-brand font-black text-lg flex items-center justify-center rounded-lg">A</div>
+                    <span class="font-brand font-black text-lg tracking-wider text-white">ADOUWA</span>
+                </div>
+                <p class="text-adouwa-cream/50 leading-relaxed">علامة أزياء جزائرية بطموح عالمي، متخصصة في الـStreetwear والملابس العصرية الراقية.</p>
+            </div>
+            <div>
+                <h5 class="font-bold text-white mb-3 uppercase tracking-wider">روابط سريعة</h5>
+                <ul class="space-y-2 text-adouwa-cream/70">
+                    <li><a href="#shop" onclick="switchView('store')" class="hover:text-adouwa-gold">جميع الإصدارات</a></li>
+                    <li><a href="#trackOrderSection" onclick="switchView('store')" class="hover:text-adouwa-gold">تتبع الطلبات</a></li>
+                    <li><a href="#" class="hover:text-adouwa-gold">سياسة الشحن والإرجاع</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="font-bold text-white mb-3 uppercase tracking-wider">دليل المقاسات والعناية</h5>
+                <ul class="space-y-2 text-adouwa-cream/70">
+                    <li><a href="#" class="hover:text-adouwa-gold">دليل مقاسات Unisex</a></li>
+                    <li><a href="#" class="hover:text-adouwa-gold">تعليمات غسيل الأقمشة</a></li>
+                </ul>
+            </div>
+            <div class="space-y-3">
+                <h5 class="font-bold text-white uppercase tracking-wider">الانضمام لمجتمع ADOUWA</h5>
+                <div class="flex gap-2">
+                    <input type="email" placeholder="بريدك الإلكتروني..." class="bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs text-white flex-1 focus:outline-none focus:border-adouwa-gold">
+                    <button class="bg-adouwa-gold text-adouwa-black font-bold px-3 py-2 rounded-xl text-xs uppercase">اشتراك</button>
+                </div>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 pt-6 border-t border-white/5 text-center text-adouwa-cream/40">
+            &copy; 2026 ADOUWA Couture Streetwear. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- ==================== MODALS & DRAWERS ==================== -->
+
+    <!-- Search Modal -->
+    <div id="searchModal" class="fixed inset-0 z-50 bg-adouwa-black/90 backdrop-blur-md hidden flex items-start justify-center pt-20 px-4">
+        <div class="max-w-xl w-full space-y-4">
+            <div class="flex justify-between items-center text-white">
+                <span class="font-brand font-bold text-xs uppercase tracking-widest text-adouwa-gold">البحث في منتجات ADOUWA</span>
+                <button onclick="toggleSearchModal()" class="text-xl hover:text-adouwa-gold"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <input type="text" id="globalSearchInput" oninput="handleSearch(this.value)" placeholder="ابحث باسم القطعة، الفئة، أو الأسلوب..." class="w-full bg-white/10 border border-adouwa-gold/40 rounded-2xl px-6 py-4 text-white placeholder-adouwa-cream/40 focus:outline-none focus:border-adouwa-gold">
+        </div>
+    </div>
+
+    <!-- Product Details Modal (Variants & Size Guide) -->
+    <div id="productModal" class="fixed inset-0 z-50 hidden overflow-y-auto flex items-center justify-center p-4">
+        <div class="fixed inset-0 bg-adouwa-black/80 backdrop-blur-sm" onclick="closeProductModal()"></div>
+        <div class="relative bg-adouwa-gray border border-white/10 rounded-3xl max-w-3xl w-full overflow-hidden shadow-2xl z-10 grid grid-cols-1 md:grid-cols-2">
+            <button onclick="closeProductModal()" class="absolute top-4 left-4 z-20 w-8 h-8 rounded-full bg-adouwa-black/60 text-white flex items-center justify-center hover:bg-adouwa-gold hover:text-adouwa-black transition-all">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            
+            <div class="bg-adouwa-black h-80 md:h-full relative">
+                <img id="modalImg" src="" alt="" class="w-full h-full object-cover">
+                <span id="modalBadge" class="absolute top-4 right-4 bg-adouwa-gold text-adouwa-black text-[10px] font-black uppercase px-3 py-1 rounded-full">New Drop</span>
+            </div>
+
+            <div class="p-6 md:p-8 space-y-6 flex flex-col justify-between">
+                <div class="space-y-3">
+                    <span id="modalCategory" class="text-xs font-bold text-adouwa-gold uppercase tracking-widest">فئة</span>
+                    <h3 id="modalName" class="text-2xl font-black font-brand text-white">اسم المنتج</h3>
+                    <div id="modalPrice" class="text-xl font-black text-white">0 د.ج</div>
+                    <p id="modalDesc" class="text-xs text-adouwa-cream/70 leading-relaxed">وصف تفصيلي للقطعة وتفاصيل الأقمشة المستخدمة.</p>
+                </div>
+
+                <!-- Size & Color Selection -->
+                <div class="space-y-4 pt-4 border-t border-white/10">
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="text-xs font-bold text-white uppercase">المقاس (Size)</label>
+                            <button onclick="alert('دليل المقاسات Standard Unisex: S = 50-65kg | M = 65-78kg | L = 78-90kg | XL = 90kg+')" class="text-[10px] text-adouwa-gold underline">Size Guide</button>
+                        </div>
+                        <div class="flex gap-2" id="sizeSelector">
+                            <button onclick="selectSize('S')" class="size-btn px-4 py-2 rounded-xl text-xs font-bold bg-white/5 border border-white/10 hover:border-adouwa-gold">S</button>
+                            <button onclick="selectSize('M')" class="size-btn px-4 py-2 rounded-xl text-xs font-bold bg-adouwa-gold text-adouwa-black border border-adouwa-gold">M</button>
+                            <button onclick="selectSize('L')" class="size-btn px-4 py-2 rounded-xl text-xs font-bold bg-white/5 border border-white/10 hover:border-adouwa-gold">L</button>
+                            <button onclick="selectSize('XL')" class="size-btn px-4 py-2 rounded-xl text-xs font-bold bg-white/5 border border-white/10 hover:border-adouwa-gold">XL</button>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-2">
+                        <span class="text-xs font-bold text-white">الكمية</span>
+                        <div class="flex items-center border border-white/10 rounded-xl bg-white/5">
+                            <button onclick="changeModalQty(-1)" class="px-3 py-1 font-bold text-white hover:text-adouwa-gold">-</button>
+                            <span id="modalQtyVal" class="px-3 py-1 text-xs font-bold text-white">1</span>
+                            <button onclick="changeModalQty(1)" class="px-3 py-1 font-bold text-white hover:text-adouwa-gold">+</button>
+                        </div>
+                    </div>
+
+                    <button onclick="addModalItemToCart()" class="w-full bg-adouwa-gold hover:bg-adouwa-gold-hover text-adouwa-black font-black py-3.5 rounded-xl text-xs uppercase tracking-wider shadow-lg flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-bag-shopping"></i>
+                        <span>إضافة للسلة الحالية</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Drawer -->
+    <div id="cartDrawer" class="fixed inset-0 z-50 hidden overflow-hidden">
+        <div class="absolute inset-0 bg-adouwa-black/80 backdrop-blur-sm" onclick="closeCartDrawer()"></div>
+        <div class="absolute inset-y-0 left-0 max-w-full flex">
+            <div class="w-screen max-w-md bg-adouwa-gray border-r border-white/10 shadow-2xl flex flex-col justify-between">
+                <div class="p-6 border-b border-white/10 flex justify-between items-center">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-bag-shopping text-adouwa-gold"></i>
+                        <h3 class="font-brand font-black text-white text-lg">سلة مشتريات ADOUWA</h3>
+                    </div>
+                    <button onclick="closeCartDrawer()" class="text-adouwa-cream/60 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+                </div>
+
+                <div id="cartList" class="flex-1 overflow-y-auto p-6 space-y-4 divide-y divide-white/5">
+                    <!-- Populated dynamically -->
+                </div>
+
+                <div class="p-6 bg-adouwa-black border-t border-white/10 space-y-4">
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="text-adouwa-cream/60">المجموع الكلي:</span>
+                        <span id="cartSubtotal" class="font-bold text-lg text-adouwa-gold">0 د.ج</span>
+                    </div>
+                    <button onclick="openCheckoutModal()" class="w-full bg-adouwa-green hover:bg-adouwa-green-dark text-white font-black py-3.5 rounded-xl text-xs uppercase tracking-wider border border-adouwa-gold/30">
+                        متابعة إلى الدفع الشامل
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div id="checkoutModal" class="fixed inset-0 z-50 hidden overflow-y-auto flex items-center justify-center p-4">
+        <div class="fixed inset-0 bg-adouwa-black/80 backdrop-blur-sm" onclick="closeCheckoutModal()"></div>
+        <div class="relative bg-adouwa-gray border border-white/10 rounded-3xl max-w-lg w-full p-6 md:p-8 shadow-2xl z-10">
+            <div class="flex justify-between items-center pb-4 border-b border-white/10 mb-6">
+                <h3 class="font-brand font-black text-white text-xl">تفاصيل الشحن والدفع (Algeria)</h3>
+                <button onclick="closeCheckoutModal()" class="text-adouwa-cream/60 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form onsubmit="confirmOrder(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-white mb-1">الاسم الكامل</label>
+                    <input type="text" id="chkName" required placeholder="مثال: كريم الجزائري" class="w-full bg-adouwa-black border border-white/10 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-adouwa-gold">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-white mb-1">رقم الهاتف</label>
+                        <input type="tel" id="chkPhone" required placeholder="05xxxxxxxx" class="w-full bg-adouwa-black border border-white/10 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-adouwa-gold">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-white mb-1">الولاية (Wilaya)</label>
+                        <input type="text" id="chkWilaya" required placeholder="مثال: وهران" class="w-full bg-adouwa-black border border-white/10 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-adouwa-gold">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-white mb-1">العنوان الكامل والبلدية</label>
+                    <input type="text" id="chkAddress" required placeholder="الحي، رقم الشارع..." class="w-full bg-adouwa-black border border-white/10 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-adouwa-gold">
+                </div>
+                <div class="bg-white/5 p-4 rounded-xl border border-white/10 flex justify-between items-center text-xs">
+                    <span class="text-adouwa-cream/80">خيار الدفع:</span>
+                    <span class="text-adouwa-gold font-bold">الدفع عند الاستلام (COD)</span>
+                </div>
+                <button type="submit" class="w-full bg-adouwa-gold hover:bg-adouwa-gold-hover text-adouwa-black font-black py-4 rounded-xl text-xs uppercase tracking-wider">
+                    تأكيد وإرسال الطلب النهائي
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Product Editor Modal (Admin) -->
+    <div id="productEditorModal" class="fixed inset-0 z-50 hidden overflow-y-auto flex items-center justify-center p-4">
+        <div class="fixed inset-0 bg-adouwa-black/80 backdrop-blur-sm" onclick="closeProductEditorModal()"></div>
+        <div class="relative bg-adouwa-gray border border-white/10 rounded-3xl max-w-md w-full p-6 shadow-2xl z-10 space-y-4">
+            <div class="flex justify-between items-center pb-3 border-b border-white/10">
+                <h3 class="font-bold text-white text-base">إضافة / تعديل قطعة أزياء</h3>
+                <button onclick="closeProductEditorModal()" class="text-adouwa-cream/60"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form onsubmit="saveProductAdmin(event)" class="space-y-3">
+                <input type="hidden" id="editId">
+                <div>
+                    <label class="block text-[10px] font-bold text-white mb-1 uppercase">اسم القطعة</label>
+                    <input type="text" id="editName" required class="w-full bg-adouwa-black border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-adouwa-gold">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[10px] font-bold text-white mb-1 uppercase">السعر (د.ج)</label>
+                        <input type="number" id="editPrice" required class="w-full bg-adouwa-black border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-adouwa-gold">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-white mb-1 uppercase">الفئة</label>
+                        <select id="editCategory" class="w-full bg-adouwa-black border border-white/10 rounded-xl px-3 py-2 text-xs text-white">
+                            <option value="Hoodies">Hoodies</option>
+                            <option value="T-Shirts">T-Shirts</option>
+                            <option value="Pants">Pants</option>
+                            <option value="Accessories">Accessories</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-white mb-1 uppercase">رابط الصورة (URL)</label>
+                    <input type="url" id="editImg" required class="w-full bg-adouwa-black border border-white/10 rounded-xl px-3 py-2 text-xs text-white">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-white mb-1 uppercase">الوصف</label>
+                    <textarea id="editDesc" rows="2" class="w-full bg-adouwa-black border border-white/10 rounded-xl px-3 py-2 text-xs text-white"></textarea>
+                </div>
+                <button type="submit" class="w-full bg-adouwa-gold text-adouwa-black font-bold py-3 rounded-xl text-xs uppercase">حفظ التغييرات</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================== LOGIC & SCRIPT ==================== -->
+    <script>
+        const initialProducts = [
+            {
+                id: 101,
+                name: "ADOUWA Oversized Signature Hoodie",
+                price: 9800,
+                category: "Hoodies",
+                image: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&q=80&w=600",
+                description: "هودي أوفرسايز من القطن الجزائري الثقيل 450 GSM مطرز بشعار ADOUWA على الصدر بأناقة مطلقة.",
+                stock: 15,
+                badge: "Limited Drop"
+            },
+            {
+                id: 102,
+                name: "Nomad Street Cargo Pants",
+                price: 8400,
+                category: "Pants",
+                image: "https://images.unsplash.com/photo-1517445312882-bc9910d016b7?auto=format&fit=crop&q=80&w=600",
+                description: "سروال كارجو بلون أصفر زيتوني مستوحى من الصحراء وعاطفة الشارع الحديث مع جيوب متعددة الاستخدامات.",
+                stock: 8,
+                badge: "Best Seller"
+            },
+            {
+                id: 103,
+                name: "Black Gold Acid Graphic Tee",
+                price: 4900,
+                category: "T-Shirts",
+                image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&q=80&w=600",
+                description: "تيشيرت بقصة عصرية غسل معتق مع طبعة جرافيكية جريئة في الخلف.",
+                stock: 22,
+                badge: "New"
+            },
+            {
+                id: 104,
+                name: "ADOUWA Gold Chain Beanie",
+                price: 3200,
+                category: "Accessories",
+                image: "https://images.unsplash.com/photo-1576871337622-98d48d1cf531?auto=format&fit=crop&q=80&w=600",
+                description: "قبعة صوفية ممتازة مزودة بحلية معدنية باللون الذهبي المطفي.",
+                stock: 5,
+                badge: "Low Stock"
+            }
+        ];
+
+        let products = JSON.parse(localStorage.getItem('adouwa_full_products')) || initialProducts;
+        let orders = JSON.parse(localStorage.getItem('adouwa_full_orders')) || [
+            {
+                id: "ORD-7492",
+                name: "ياسين العلمي",
+                phone: "0661998877",
+                wilaya: "الجزائر العاصمة",
+                address: "حي حيدرة 12",
+                items: "ADOUWA Oversized Signature Hoodie (M) x1",
+                total: 9800,
+                status: "Shipped"
+            }
+        ];
+        let cart = JSON.parse(localStorage.getItem('adouwa_full_cart')) || [];
+
+        let currentCategory = "All";
+        let selectedSize = "M";
+        let activeModalProduct = null;
+        let modalQty = 1;
+
+        // Init
+        window.onload = function() {
+            renderCategoryBar();
+            renderProducts();
+            updateCartUI();
+            updateAdminStats();
+            renderAdminTables();
+        };
+
+        function saveData() {
+            localStorage.setItem('adouwa_full_products', JSON.stringify(products));
+            localStorage.setItem('adouwa_full_orders', JSON.stringify(orders));
+            localStorage.setItem('adouwa_full_cart', JSON.stringify(cart));
+        }
+
+        // Toasts
+        function showToast(msg) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = "bg-adouwa-gold text-adouwa-black px-4 py-3 rounded-xl shadow-2xl font-bold text-xs flex items-center gap-2 border border-black/20 animate-bounce pointer-events-auto";
+            toast.innerHTML = `<i class="fa-solid fa-circle-check"></i> <span>${msg}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // Category Bar Render
+        function renderCategoryBar() {
+            const categories = ["All", "Hoodies", "T-Shirts", "Pants", "Accessories"];
+            const bar = document.getElementById('categoryBar');
+            bar.innerHTML = categories.map(cat => `
+                <button onclick="filterCategory('${cat}')" class="px-5 py-2 rounded-xl text-xs font-bold uppercase transition-all ${currentCategory === cat ? 'bg-adouwa-gold text-adouwa-black shadow-md' : 'bg-white/5 hover:bg-white/10 text-white border border-white/10'}">${cat}</button>
+            `).join('');
+        }
+
+        function filterCategory(cat) {
+            currentCategory = cat;
+            renderCategoryBar();
+            renderProducts();
+        }
+
+        // Render Store Products
+        function renderProducts() {
+            const grid = document.getElementById('productsGrid');
+            const noFound = document.getElementById('noProductsFound');
+            
+            const filtered = products.filter(p => currentCategory === "All" || p.category === currentCategory);
+
+            if (filtered.length === 0) {
+                grid.innerHTML = "";
+                noFound.classList.remove('hidden');
+                return;
+            }
+
+            noFound.classList.add('hidden');
+            grid.innerHTML = filtered.map(p => `
+                <div class="bg-adouwa-gray border border-white/10 rounded-3xl overflow-hidden hover:border-adouwa-gold/40 transition-all group flex flex-col justify-between">
+                    <div class="relative h-72 bg-adouwa-black overflow-hidden cursor-pointer" onclick="openProductModal(${p.id})">
+                        <img src="${p.image}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <span class="absolute top-4 right-4 bg-adouwa-black/70 backdrop-blur-md text-adouwa-gold border border-adouwa-gold/30 text-[10px] font-black uppercase px-3 py-1 rounded-full">${p.badge || p.category}</span>
+                    </div>
+                    <div class="p-5 space-y-3">
+                        <span class="text-[10px] font-bold text-adouwa-cream/50 uppercase tracking-widest">${p.category}</span>
+                        <h4 onclick="openProductModal(${p.id})" class="font-brand font-bold text-white text-base cursor-pointer hover:text-adouwa-gold transition-colors">${p.name}</h4>
+                        <div class="flex items-center justify-between pt-2 border-t border-white/5">
+                            <span class="text-base font-black text-adouwa-gold">${p.price.toLocaleString()} د.ج</span>
+                            <button onclick="openProductModal(${p.id})" class="bg-adouwa-gold hover:bg-adouwa-gold-hover text-adouwa-black p-2.5 rounded-xl font-bold transition-all text-xs" title="اختر المقاس والشراء">
+                                <i class="fa-solid fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Product Modal Logic
+        function openProductModal(id) {
+            activeModalProduct = products.find(p => p.id === id);
+            if (!activeModalProduct) return;
+
+            document.getElementById('modalImg').src = activeModalProduct.image;
+            document.getElementById('modalName').innerText = activeModalProduct.name;
+            document.getElementById('modalCategory').innerText = activeModalProduct.category;
+            document.getElementById('modalPrice').innerText = `${activeModalProduct.price.toLocaleString()} د.ج`;
+            document.getElementById('modalDesc').innerText = activeModalProduct.description;
+            document.getElementById('modalBadge').innerText = activeModalProduct.badge || "Unisex Edition";
+
+            modalQty = 1;
+            document.getElementById('modalQtyVal').innerText = modalQty;
+            document.getElementById('productModal').classList.remove('hidden');
+        }
+
+        function closeProductModal() {
+            document.getElementById('productModal').classList.add('hidden');
+        }
+
+        function selectSize(size) {
+            selectedSize = size;
+            const buttons = document.querySelectorAll('#sizeSelector button');
+            buttons.forEach(btn => {
+                if (btn.innerText === size) {
+                    btn.className = "size-btn px-4 py-2 rounded-xl text-xs font-bold bg-adouwa-gold text-adouwa-black border border-adouwa-gold";
+                } else {
+                    btn.className = "size-btn px-4 py-2 rounded-xl text-xs font-bold bg-white/5 border border-white/10 hover:border-adouwa-gold";
+                }
+            });
+        }
+
+        function changeModalQty(delta) {
+            modalQty += delta;
+            if (modalQty < 1) modalQty = 1;
+            document.getElementById('modalQtyVal').innerText = modalQty;
+        }
+
+        function addModalItemToCart() {
+            if (!activeModalProduct) return;
+            
+            const cartItemId = `${activeModalProduct.id}-${selectedSize}`;
+            const existing = cart.find(i => i.cartItemId === cartItemId);
+
+            if (existing) {
+                existing.qty += modalQty;
+            } else {
+                cart.push({
+                    cartItemId,
+                    id: activeModalProduct.id,
+                    name: activeModalProduct.name,
+                    price: activeModalProduct.price,
+                    image: activeModalProduct.image,
+                    size: selectedSize,
+                    qty: modalQty
+                });
+            }
+
+            saveData();
+            updateCartUI();
+            closeProductModal();
+            showToast(`تم إضافة القطعة بمقاس (${selectedSize}) إلى السلة`);
+        }
+
+        // Cart Drawer
+        function updateCartUI() {
+            const count = cart.reduce((sum, item) => sum + item.qty, 0);
+            document.getElementById('cartBadge').innerText = count;
+        }
+
+        function openCartDrawer() {
+            renderCartDrawerList();
+            document.getElementById('cartDrawer').classList.remove('hidden');
+        }
+
+        function closeCartDrawer() {
+            document.getElementById('cartDrawer').classList.add('hidden');
+        }
+
+        function renderCartDrawerList() {
+            const list = document.getElementById('cartList');
+            const subtotalEl = document.getElementById('cartSubtotal');
+
+            if (cart.length === 0) {
+                list.innerHTML = `<div class="text-center py-12 text-adouwa-cream/50 text-xs">السلة فارغة حتى الآن</div>`;
+                subtotalEl.innerText = "0 د.ج";
+                return;
+            }
+
+            let subtotal = 0;
+            list.innerHTML = cart.map(item => {
+                subtotal += item.price * item.qty;
+                return `
+                    <div class="flex items-center gap-4 pt-3">
+                        <img src="${item.image}" class="w-16 h-16 object-cover rounded-xl bg-adouwa-black">
+                        <div class="flex-1 min-w-0">
+                            <h5 class="text-xs font-bold text-white truncate">${item.name}</h5>
+                            <span class="text-[10px] text-adouwa-gold font-bold">المقاس: ${item.size}</span>
+                            <div class="text-xs font-black text-white mt-1">${(item.price * item.qty).toLocaleString()} د.ج</div>
+                        </div>
+                        <button onclick="removeCartItem('${item.cartItemId}')" class="text-rose-400 text-xs p-1"><i class="fa-solid fa-trash-can"></i></button>
+                    </div>
+                `;
+            }).join('');
+
+            subtotalEl.innerText = `${subtotal.toLocaleString()} د.ج`;
+        }
+
+        function removeCartItem(cartItemId) {
+            cart = cart.filter(i => i.cartItemId !== cartItemId);
+            saveData();
+            updateCartUI();
+            renderCartDrawerList();
+        }
+
+        // Checkout & Orders
+        function openCheckoutModal() {
+            if (cart.length === 0) return alert("السلة فارغة!");
+            closeCartDrawer();
+            document.getElementById('checkoutModal').classList.remove('hidden');
+        }
+
+        function closeCheckoutModal() {
+            document.getElementById('checkoutModal').classList.add('hidden');
+        }
+
+        function confirmOrder(e) {
+            e.preventDefault();
+            const newOrder = {
+                id: "ORD-" + Math.floor(1000 + Math.random() * 9000),
+                name: document.getElementById('chkName').value,
+                phone: document.getElementById('chkPhone').value,
+                wilaya: document.getElementById('chkWilaya').value,
+                address: document.getElementById('chkAddress').value,
+                items: cart.map(i => `${i.name} (${i.size}) x${i.qty}`).join(' | '),
+                total: cart.reduce((sum, i) => sum + (i.price * i.qty), 0),
+                status: "New"
+            };
+
+            orders.unshift(newOrder);
+            cart = [];
+            saveData();
+            updateCartUI();
+            closeCheckoutModal();
+            updateAdminStats();
+            renderAdminTables();
+            showToast(`تم تأكيد الطلب بنجاح! رقم طلبك: ${newOrder.id}`);
+        }
+
+        // Admin & Views Toggle
+        function switchView(view) {
+            if (view === 'admin') {
+                document.getElementById('storeView').classList.add('hidden');
+                document.getElementById('adminView').classList.remove('hidden');
+                document.getElementById('adminToggleText').innerText = "العودة للمتجر";
+            } else {
+                document.getElementById('adminView').classList.add('hidden');
+                document.getElementById('storeView').classList.remove('hidden');
+                document.getElementById('adminToggleText').innerText = "لوحة التحكم";
+            }
+        }
+
+        function toggleAdminMode() {
+            const isAdminVisible = !document.getElementById('adminView').classList.contains('hidden');
+            switchView(isAdminVisible ? 'store' : 'admin');
+        }
+
+        function switchAdminTab(tab) {
+            if (tab === 'products') {
+                document.getElementById('adminProductsTab').classList.remove('hidden');
+                document.getElementById('adminOrdersTab').classList.add('hidden');
+                document.getElementById('tabProductsBtn').className = "pb-3 text-xs font-bold uppercase border-b-2 border-adouwa-gold text-adouwa-gold";
+                document.getElementById('tabOrdersBtn').className = "pb-3 text-xs font-bold uppercase border-b-2 border-transparent text-adouwa-cream/60";
+            } else {
+                document.getElementById('adminProductsTab').classList.add('hidden');
+                document.getElementById('adminOrdersTab').classList.remove('hidden');
+                document.getElementById('tabOrdersBtn').className = "pb-3 text-xs font-bold uppercase border-b-2 border-adouwa-gold text-adouwa-gold";
+                document.getElementById('tabProductsBtn').className = "pb-3 text-xs font-bold uppercase border-b-2 border-transparent text-adouwa-cream/60";
+            }
+        }
+
+        function updateAdminStats() {
+            const sales = orders.reduce((sum, o) => sum + o.total, 0);
+            const lowStock = products.filter(p => (p.stock || 0) < 10).length;
+
+            document.getElementById('statTotalSales').innerText = `${sales.toLocaleString()} د.ج`;
+            document.getElementById('statTotalOrders').innerText = orders.length;
+            document.getElementById('statTotalProducts').innerText = products.length;
+            document.getElementById('statLowStock').innerText = lowStock;
+        }
+
+        function renderAdminTables() {
+            // Products
+            document.getElementById('adminProductsBody').innerHTML = products.map(p => `
+                <tr class="hover:bg-white/5">
+                    <td class="py-3 pr-4 flex items-center gap-3">
+                        <img src="${p.image}" class="w-10 h-10 object-cover rounded-lg">
+                        <span class="font-bold text-white">${p.name}</span>
+                    </td>
+                    <td class="py-3 text-adouwa-gold">${p.category}</td>
+                    <td class="py-3 font-bold text-white">${p.price.toLocaleString()} د.ج</td>
+                    <td class="py-3">${p.stock || 12} قطعة</td>
+                    <td class="py-3 text-left pl-4">
+                        <button onclick="deleteProductAdmin(${p.id})" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+
+            // Orders
+            document.getElementById('adminOrdersBody').innerHTML = orders.map(o => `
+                <tr class="hover:bg-white/5">
+                    <td class="py-3 pr-4 font-bold text-adouwa-gold">${o.id}</td>
+                    <td class="py-3 font-bold text-white">${o.name}</td>
+                    <td class="py-3 text-adouwa-cream/70">${o.phone} (${o.wilaya})</td>
+                    <td class="py-3 text-adouwa-cream/80 max-w-xs truncate">${o.items}</td>
+                    <td class="py-3 font-black text-white">${o.total.toLocaleString()} د.ج</td>
+                    <td class="py-3"><span class="bg-adouwa-gold/20 text-adouwa-gold px-2 py-0.5 rounded text-[10px] font-bold">${o.status}</span></td>
+                    <td class="py-3 text-left pl-4">
+                        <select onchange="updateOrderStatus('${o.id}', this.value)" class="bg-adouwa-black border border-white/10 rounded text-[10px] text-white p-1">
+                            <option ${o.status==='New'?'selected':''}>New</option>
+                            <option ${o.status==='Shipped'?'selected':''}>Shipped</option>
+                            <option ${o.status==='Delivered'?'selected':''}>Delivered</option>
+                        </select>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function updateOrderStatus(id, status) {
+            const order = orders.find(o => o.id === id);
+            if (order) {
+                order.status = status;
+                saveData();
+                showToast(`تم تحديث حالة الطلب إلى ${status}`);
+            }
+        }
+
+        function openProductEditorModal() {
+            document.getElementById('productEditorModal').classList.remove('hidden');
+        }
+
+        function closeProductEditorModal() {
+            document.getElementById('productEditorModal').classList.add('hidden');
+        }
+
+        function saveProductAdmin(e) {
+            e.preventDefault();
+            const newP = {
+                id: Date.now(),
+                name: document.getElementById('editName').value,
+                price: parseFloat(document.getElementById('editPrice').value),
+                category: document.getElementById('editCategory').value,
+                image: document.getElementById('editImg').value,
+                description: document.getElementById('editDesc').value,
+                stock: 20
+            };
+            products.unshift(newP);
+            saveData();
+            renderProducts();
+            updateAdminStats();
+            renderAdminTables();
+            closeProductEditorModal();
+            showToast("تم إضافة القطعة بنجاح");
+        }
+
+        function deleteProductAdmin(id) {
+            products = products.filter(p => p.id !== id);
+            saveData();
+            renderProducts();
+            updateAdminStats();
+            renderAdminTables();
+            showToast("تم حذف القطعة");
+        }
+
+        function trackOrder() {
+            const code = document.getElementById('trackInput').value.trim();
+            const res = document.getElementById('trackResult');
+            const found = orders.find(o => o.id.toLowerCase() === code.toLowerCase());
+
+            res.classList.remove('hidden');
+            if (found) {
+                res.innerHTML = `
+                    <div class="text-emerald-400 font-bold">الطلب موجود: ${found.id}</div>
+                    <div>حالة الطلب: <span class="text-adouwa-gold font-bold">${found.status}</span></div>
+                    <div>الوجهة: ${found.wilaya}</div>
+                `;
+            } else {
+                res.innerHTML = `<div class="text-rose-400">لم يتم العثور على أي طلب بهذا الرقم</div>`;
+            }
+        }
+
+        function toggleSearchModal() {
+            document.getElementById('searchModal').classList.toggle('hidden');
+        }
+
+        function handleSearch(val) {
+            const query = val.toLowerCase().trim();
+            const grid = document.getElementById('productsGrid');
+            const filtered = products.filter(p => p.name.toLowerCase().includes(query) || p.category.toLowerCase().includes(query));
+            
+            grid.innerHTML = filtered.map(p => `
+                <div class="bg-adouwa-gray border border-white/10 rounded-3xl overflow-hidden p-4">
+                    <img src="${p.image}" class="w-full h-48 object-cover rounded-2xl mb-3">
+                    <h4 class="font-bold text-white text-sm">${p.name}</h4>
+                    <div class="text-adouwa-gold font-bold text-xs mt-1">${p.price.toLocaleString()} د.ج</div>
+                </div>
+            `).join('');
+        }
+
+        function resetDataToDefault() {
+            if (confirm("إعادة ضبط كافية البيانات لتجربة جديدة؟")) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+    </script>
+</body>
+</html>
